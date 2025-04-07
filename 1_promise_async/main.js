@@ -68,44 +68,76 @@ const byapple3 = (applenumber) => {
 
     console.log(res2)
 
-    class service {
+    class Service{
         #data
-
+    
         constructor(){
             this.#data = people
         }
-
-        init(){
-           return new Promise((resolve,reject) => {
-            setTimeout(() => {
-                resolve(this.#data)
-            }, 3000);
-           })
+    
+        Init() {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(this.#data);
+                }, 2000);
+            });
+        }
+    
+        initInvalid() {
+            return new Promise((reject) => {
+                setTimeout(() => {
+                    reject('Invalid initialization');
+                }, 2000);
+            });
+        }
+    
+        realInit(dbNumber) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (dbNumber < 5) {
+                        resolve('Vannak almák: ' + dbNumber);
+                    } else {
+                        reject('Nincsenek elég almák: ' + dbNumber);
+                    }
+                }, 2000);
+            });
         }
     }
-
-
-    class dataviewcontroller {
+    
+    class DataViewController{
         #div
-        
-        constructor() {
+        constructor(){
             this.#div = document.createElement('div')
-            document.body.appendChild(this.#div)
             this.#div.textContent = 'Loading'
+            document.body.appendChild(this.#div)
         }
-
-        setcontent(array) {
-            this.#div.innerHTML = ""
-            for(const elem of array) {
+    
+        setContent(array){
+            this.#div.innerHTML = ''
+            for(const element of array){
                 const div = document.createElement('div')
-                div.textContent = elem.name
+                div.textContent = element.name
                 this.#div.appendChild(div)
             }
         }
+    
+        renderError(error) {
+            this.#div.textContent = error;
+        }
     }
-
-    const szer = new service()
-    const view = new dataviewcontroller()
-    szer.init().then((vavava) =>{
-        view.setcontent(vavava)
+    
+    const ser = new Service()
+    const view = new DataViewController()
+    ser.Init().then((value) => {
+        view.setContent(value);
     })
+    
+    ser.initInvalid().catch((error) => {
+        view.renderError(error);
+    });
+    
+    ser.realInit(3).then((value) => {
+        console.log(value);
+    }).catch((error) => {
+        view.renderError(error);
+    });
